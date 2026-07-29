@@ -1,0 +1,15 @@
+# Environment secrets
+.env
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
+
+# Go build output
+youtube-stats-server
+server
+
+# OS
+.DS_Store
+Thumbs.db

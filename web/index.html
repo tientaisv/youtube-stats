@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Stats Vibe — Go Engine</title>
+  <meta name="description" content="Hệ thống theo dõi, thống kê và phân tích tăng trưởng video YouTube chuyên nghiệp với So Sánh Đối Thủ Cạnh Tranh.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- ======================================================= -->
+    <!-- TOP NAVIGATION BAR                                        -->
+    <!-- ======================================================= -->
+    <header class="navbar">
+      <!-- Brand Logo -->
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96c.32-1.74.46-3.53.46-5.33a29 29 0 0 0-.46-5.33z" fill="#FF0000"/>
+            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="white"/>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <h1>YouTube Stats Vibe</h1>
+          <span class="badge go-badge">Go Engine</span>
+        </div>
+      </div>
+
+      <!-- Desktop Main Navigation Tabs -->
+      <nav class="main-nav-tabs" id="main-nav-tabs">
+        <button id="tab-nav-overview" class="nav-tab-btn active">📊 Thống Kê</button>
+        <button id="tab-nav-compare" class="nav-tab-btn">⚔️ Đối Thủ</button>
+        <button id="tab-nav-users" class="nav-tab-btn hidden">👥 User</button>
+      </nav>
+
+      <!-- Right Controls -->
+      <div class="nav-right">
+        <!-- API Key Status -->
+        <div id="api-status-badge" class="status-chip">
+          <span class="pulse-dot"></span>
+          <span id="active-keys-text" class="chip-text">API Keys...</span>
+        </div>
+
+        <!-- User Info Chip -->
+        <div id="user-info-chip" class="user-chip hidden">
+          <div class="user-avatar-circle">👤</div>
+          <div class="user-chip-info">
+            <span id="user-display-name" class="user-chip-name">User</span>
+          </div>
+          <button id="btn-logout" class="btn-logout-link" title="Đăng Xuất">🚪</button>
+        </div>
+
+        <!-- Action Buttons (Desktop) -->
+        <div class="nav-actions" id="nav-actions">
+          <button id="btn-trigger-collect" class="btn btn-secondary btn-icon-label" title="Ghi Snapshot">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span class="btn-label">Snapshot</span>
+          </button>
+          <button id="btn-open-add-modal" class="btn btn-primary btn-icon-label">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span class="btn-label">Thêm Kênh</span>
+          </button>
+        </div>
+
+        <!-- Hamburger Button (Mobile) -->
+        <button class="hamburger-btn" id="btn-hamburger" aria-label="Mở menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div id="mobile-drawer" class="mobile-drawer hidden">
+      <nav class="mobile-nav-tabs">
+        <button class="mobile-nav-btn active" data-tab="overview">📊 Thống Kê Kênh</button>
+        <button class="mobile-nav-btn" data-tab="compare">⚔️ So Sánh Đối Thủ</button>
+        <button class="mobile-nav-btn hidden" data-tab="users" id="mobile-tab-users">👥 Quản Lý User</button>
+      </nav>
+      <hr class="mobile-drawer-divider">
+      <div class="mobile-drawer-actions">
+        <button id="btn-trigger-collect-mobile" class="btn btn-secondary btn-full">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Ghi Snapshot Ngay
+        </button>
+        <button id="btn-open-add-modal-mobile" class="btn btn-primary btn-full">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Thêm Kênh YouTube
+        </button>
+        <button id="btn-logout-mobile" class="btn btn-danger btn-full hidden">🚪 Đăng Xuất</button>
+      </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- MAIN CONTENT                                              -->
+    <!-- ======================================================= -->
+    <main class="main-content">
+
+      <!-- Summary Metric Cards -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon channels-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </div>
+          <div class="metric-data">
+            <span class="metric-label">Tổng Số Kênh</span>
+            <h2 id="stat-channels">0</h2>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon videos-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          </div>
+          <div class="metric-data">
+            <span class="metric-label">Tổng Số Video</span>
+            <h2 id="stat-videos">0</h2>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon views-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="metric-data">
+            <span class="metric-label">Tổng Lượt View</span>
+            <h2 id="stat-views">0</h2>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon snapshots-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="metric-data">
+            <span class="metric-label">Lịch Sử Snapshots</span>
+            <h2 id="stat-snapshots">0</h2>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- OVERVIEW SECTION (Tab: Thống Kê Kênh)                  -->
+      <!-- ===================================================== -->
+      <div id="section-overview" class="content-split">
+
+        <!-- Sidebar: Channel List -->
+        <aside class="sidebar-panel">
+          <div class="panel-header">
+            <h3>Kênh Đang Theo Dõi</h3>
+          </div>
+          <div id="channel-list" class="channel-list">
+            <div class="empty-state">Đang tải danh sách kênh...</div>
+          </div>
+        </aside>
+
+        <!-- Main Panel: Video Details -->
+        <section class="main-panel">
+          <!-- Active Channel Banner -->
+          <div id="active-channel-banner" class="channel-banner hidden">
+            <img id="banner-channel-thumb" src="" alt="Thumbnail" class="channel-avatar">
+            <div class="banner-info">
+              <h2 id="banner-channel-title">Chọn 1 kênh để xem video</h2>
+              <span id="banner-channel-handle" class="channel-handle">@handle</span>
+            </div>
+            <div class="banner-actions">
+              <button id="btn-set-primary-channel" class="btn btn-secondary-sm btn-gold">👑 Kênh Của Tôi</button>
+              <button id="btn-export-csv" class="btn btn-secondary-sm">📥 Xuất CSV</button>
+              <button id="btn-toggle-hourly-chart" class="btn btn-secondary-sm">🔥 Giờ Vàng</button>
+              <button id="btn-delete-channel" class="btn btn-danger-sm">Xóa</button>
+            </div>
+          </div>
+
+          <!-- Peak Hourly Chart Panel -->
+          <div id="hourly-chart-panel" class="hourly-panel hidden">
+            <div class="hourly-panel-header">
+              <div class="hourly-title-box">
+                <h3>🔥 Phân Tích Khung Giờ Tăng Trưởng Views Cao Nhất</h3>
+                <p class="sub-text">Đo lường mốc thời gian viewer xem nhiều nhất dựa trên biến động snapshot (00:00–23:00).</p>
+              </div>
+              <div id="peak-hour-badge" class="peak-badge">🏆 Khung Giờ Vàng: Đang tính toán...</div>
+            </div>
+            <div class="hourly-chart-wrapper">
+              <canvas id="hourlyChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Video Filter Tabs -->
+          <div class="video-toolbar-top">
+            <div class="category-tabs">
+              <button class="tab-btn active" data-type="all">Tất Cả</button>
+              <button class="tab-btn" data-type="shorts">⚡ Shorts</button>
+              <button class="tab-btn" data-type="medium">🎬 Vừa</button>
+              <button class="tab-btn" data-type="long">🎥 Dài</button>
+            </div>
+          </div>
+
+          <!-- Video Search & Sort Toolbar -->
+          <div class="video-toolbar">
+            <div class="search-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="video-search-input" placeholder="Tìm kiếm tiêu đề, từ khóa video...">
+            </div>
+
+            <div class="sort-box">
+              <label>Sắp xếp:</label>
+              <select id="video-sort-select">
+                <option value="newest">Mới nhất</option>
+                <option value="views">Views cao nhất</option>
+                <option value="likes">Likes cao nhất</option>
+                <option value="comments">Comments cao nhất</option>
+                <option value="oldest">Cũ nhất</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Video Grid -->
+          <div id="video-container" class="video-grid">
+            <div class="empty-state">Vui lòng chọn một kênh từ danh sách bên trái.</div>
+          </div>
+
+          <!-- Pagination Footer -->
+          <div id="pagination-bar" class="pagination-bar hidden">
+            <div class="page-size-selector">
+              <label>Hiển thị:</label>
+              <select id="page-size-select">
+                <option value="12">12 / trang</option>
+                <option value="24" selected>24 / trang</option>
+                <option value="48">48 / trang</option>
+                <option value="96">96 / trang</option>
+              </select>
+            </div>
+
+            <div class="pagination-controls">
+              <button id="btn-prev-page" class="btn btn-secondary-sm" disabled>&laquo; Trước</button>
+              <span id="page-info-text" class="page-info">Trang 1 / 1</span>
+              <button id="btn-next-page" class="btn btn-secondary-sm" disabled>Sau &raquo;</button>
+            </div>
+          </div>
+        </section>
+      </div>
+      <!-- END: section-overview -->
+
+      <!-- ===================================================== -->
+      <!-- COMPETITOR COMPARISON SECTION (Tab: Đối Thủ)           -->
+      <!-- ===================================================== -->
+      <section id="competitor-compare-section" class="tab-section hidden">
+        <div class="section-header">
+          <div class="section-title-box">
+            <h2>⚔️ Bảng So Sánh Chỉ Số Đối Thủ Cạnh Tranh</h2>
+            <p class="sub-text">Đặt Kênh của bạn lên bàn cân so sánh song song với các kênh đối thủ trong cùng ngách.</p>
+          </div>
+        </div>
+        <div id="compare-matrix-container" class="compare-matrix-grid">
+          <div class="empty-state">Vui lòng chọn ít nhất 2 kênh để tiến hành so sánh đối thủ.</div>
+        </div>
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- ADMIN USER MANAGEMENT SECTION (Tab: User)              -->
+      <!-- ===================================================== -->
+      <section id="admin-users-section" class="tab-section hidden">
+        <div class="section-header">
+          <div class="section-title-box">
+            <h2>👥 Quản Lý Tài Khoản Người Dùng</h2>
+            <p class="sub-text">Tạo mới, phân quyền (Admin / User) và quản lý tài khoản thành viên trong hệ thống.</p>
+          </div>
+          <button id="btn-open-create-user-modal" class="btn btn-primary">➕ Tạo Tài Khoản</button>
+        </div>
+
+        <div class="users-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tên Đăng Nhập</th>
+                <th>Quyền Hạn</th>
+                <th>Ngày Tạo</th>
+                <th>Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <tr><td colspan="5" class="text-center">Đang tải...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+    <!-- END: main-content -->
+
+    <!-- ======================================================= -->
+    <!-- MODALS                                                    -->
+    <!-- ======================================================= -->
+
+    <!-- Modal: Login Screen -->
+    <div id="modal-login" class="modal-backdrop hidden">
+      <div class="modal-card login-card">
+        <div class="login-brand-header">
+          <div class="login-logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96c.32-1.74.46-3.53.46-5.33a29 29 0 0 0-.46-5.33z" fill="#FF0000"/>
+              <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="white"/>
+            </svg>
+          </div>
+          <h3>🔐 Đăng Nhập Hệ Thống</h3>
+          <p class="sub-text">YouTube Stats Vibe — Go Engine</p>
+        </div>
+
+        <form id="form-login" class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Tên đăng nhập</label>
+            <input type="text" id="login-username" class="form-input" placeholder="Nhập username hoặc email..." required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mật khẩu</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="login-password" class="form-input" placeholder="Nhập mật khẩu..." required autocomplete="current-password">
+              <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('login-password', this)" tabindex="-1">👁</button>
+            </div>
+          </div>
+
+          <div id="login-error-msg" class="error-msg hidden"></div>
+
+          <button type="submit" class="btn btn-primary btn-block">Đăng Nhập Ngay →</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Admin Create User -->
+    <div id="modal-add-user" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>➕ Tạo Tài Khoản Người Dùng Mới</h3>
+          <button id="btn-close-user-modal" class="btn-close">&times;</button>
+        </div>
+        <form id="form-add-user" class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Tên đăng nhập</label>
+            <input type="text" id="new-user-username" class="form-input" placeholder="Ví dụ: member1" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password" id="new-user-password" class="form-input" placeholder="Nhập mật khẩu..." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Quyền hạn (Role)</label>
+            <select id="new-user-role" class="form-input select-input">
+              <option value="user" selected>User — Thành viên xem thống kê</option>
+              <option value="admin">Admin — Quản trị viên toàn quyền</option>
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="btn-cancel-user-modal" class="btn btn-secondary">Hủy</button>
+            <button type="submit" class="btn btn-primary">Tạo Tài Khoản</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Add YouTube Channel -->
+    <div id="modal-add-channel" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Thêm Kênh YouTube Mới</h3>
+          <button id="btn-close-modal" class="btn-close">&times;</button>
+        </div>
+        <form id="form-add-channel" class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Handle YouTube hoặc Channel ID</label>
+            <input type="text" id="input-channel-id" class="form-input" placeholder="Ví dụ: @FPTChannel hoặc UC..." required>
+            <p class="help-text">Nhập handle YouTube (ví dụ @FPTChannel, @MrBeast) hoặc Channel ID (UC...). Hệ thống sẽ tự động quét thông tin và lập danh sách video.</p>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Hủy</button>
+            <button type="submit" class="btn btn-primary">Thêm &amp; Quét Ngay</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Video Growth Chart -->
+    <div id="modal-video-chart" class="modal-backdrop hidden">
+      <div class="modal-card modal-large">
+        <div class="modal-header">
+          <div class="video-modal-title">
+            <h3 id="chart-video-title">Chi Tiết Tăng Trưởng Video</h3>
+            <span id="chart-video-pub" class="sub-text"></span>
+          </div>
+          <button id="btn-close-chart-modal" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="chart-stats-summary">
+            <div class="mini-stat">
+              <span>Views</span>
+              <strong id="chart-stat-views">0</strong>
+            </div>
+            <div class="mini-stat">
+              <span>Likes</span>
+              <strong id="chart-stat-likes">0</strong>
+            </div>
+            <div class="mini-stat">
+              <span>Comments</span>
+              <strong id="chart-stat-comments">0</strong>
+            </div>
+            <div class="mini-stat">
+              <span>Thời lượng</span>
+              <strong id="chart-stat-duration">00:00</strong>
+            </div>
+          </div>
+
+          <div class="chart-wrapper">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- END: app-container -->
+
+  <script src="app.js"></script>
+
+  <script>
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁';
+      }
+    }
+  </script>
+</body>
+</html>

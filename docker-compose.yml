@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: youtube-stats-app
+    ports:
+      - "9090:9090"
+    environment:
+      - PORT=9090
+      - DB_TYPE=postgres
+      - DB_DSN=postgres://postgres:postgrespassword@postgres:5432/youtube_stats?sslmode=disable
+      - YOUTUBE_API_KEYS=${YOUTUBE_API_KEYS:-}
+      - CRON_SCHEDULE=${CRON_SCHEDULE:-0 */6 * * *}
+    volumes:
+      - app_data:/app/data
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: youtube-stats-db
+    environment:
+      POSTGRES_DB: youtube_stats
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+    ports:
+      - "5435:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  app_data:
+  pg_data:
